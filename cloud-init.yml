@@ -1,0 +1,7 @@
+users:
+  - name: anton
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF+zlUGop/9k/41vZ2N0/vcmQUf0770L3lyZvgI5/h2j anton@Desktop
