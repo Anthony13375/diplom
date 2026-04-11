@@ -34,6 +34,7 @@ resource "yandex_compute_instance" "bastion" {
 
   metadata = {
     user-data = file("./cloud-init.yml")
+    serial-port-enable = 1
   }
 
 
@@ -72,6 +73,7 @@ resource "yandex_compute_instance" "web-a" {
 
   metadata = {
     user-data = file("./cloud-init.yml")
+    serial-port-enable = 1
   }
 }
 
@@ -108,6 +110,7 @@ resource "yandex_compute_instance" "web-b" {
 
   metadata = {
     user-data = file("./cloud-init.yml")
+    serial-port-enable = 1
   }
 }
 
@@ -235,6 +238,7 @@ resource "yandex_compute_instance" "zabbix" {
 
   metadata = {
     user-data = file("./cloud-init.yml")
+    serial-port-enable = 1
   }
 }
 
@@ -271,6 +275,7 @@ resource "yandex_compute_instance" "elastic" {
   }
     metadata = {
       user-data = file("./cloud-init.yml")
+      serial-port-enable = 1
   }
 }  
 
@@ -309,5 +314,6 @@ resource "yandex_compute_instance" "kibana" {
 
   metadata = {
     user-data = file("./cloud-init.yml")
+    serial-port-enable = 1
   }
 }

@@ -1,7 +1,8 @@
+#cloud-config
 users:
-  - name: anton
+  - name: ubuntu
     groups: sudo
     shell: /bin/bash
-    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
     ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF+zlUGop/9k/41vZ2N0/vcmQUf0770L3lyZvgI5/h2j anton@Desktop
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMAs2KT3KXvm/Uj1y28Yo0csVCOY+HIIDg3d04UK+OSp anton@ubuntuteach
