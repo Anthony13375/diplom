@@ -1,0 +1,47 @@
+- name: Deploy website to web server
+  hosts: web
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "~/.ssh/id_ed25519"
+    web_server_packages:
+      - nginx
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install nginx
+      package:
+        name: nginx
+        state: present
+
+    - name: Create website directory
+      file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+      become: yes
+
+    - name: Copy website files
+      copy:
+        src: ./site-files/
+        dest: /var/www/html/
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Set permissions for directories
+      shell: |
+        find /var/www/html -type d -exec chmod 755 {} \;
+        find /var/www/html -type f -exec chmod 644 {} \;
+      become: yes
+
+
+    - name: Start and enable web server
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      become: yes
