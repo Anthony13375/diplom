@@ -317,3 +317,38 @@ resource "yandex_compute_instance" "kibana" {
     serial-port-enable = 1
   }
 }
+
+resource "local_file" "inventory" {
+  content  = <<-XYZ
+  Host bastion
+    User ubuntu
+    HostName ${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}
+    IdentityFile /home/anton/.ssh/id_ed25519
+
+  Host web-a
+    Hostname web-a.ru-central1.internal
+    IdentityFile /home/anton/.ssh/id_ed25519
+    ProxyJump bastion
+
+  Host web-b
+    Hostname web-b.ru-central1.internal
+    IdentityFile /home/anton/.ssh/id_ed25519
+    ProxyJump bastion
+
+  Host zabbix
+    Hostname zabbix.ru-central1.internal
+    IdentityFile /home/anton/.ssh/id_ed25519
+    ProxyJump bastion
+
+  Host kibana
+    Hostname kibana.ru-central1.internal
+    IdentityFile /home/anton/.ssh/id_ed25519
+    ProxyJump bastion
+
+  Host elastic
+    Hostname elastic.ru-central1.internal
+    IdentityFile /home/anton/.ssh/id_ed25519
+    ProxyJump bastion
+  XYZ
+  filename = "/home/anton/.ssh/config"
+}
