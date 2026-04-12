@@ -995,3 +995,40 @@ Origin: /home/anton/diplom/ansible/nginx.yml:51:6
 2026-04-12 11:58:57,114 p=48916 u=anton n=ansible INFO| PLAY RECAP *******************************************************************************
 2026-04-12 11:58:57,114 p=48916 u=anton n=ansible INFO| web-a                      : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 2026-04-12 11:58:57,114 p=48916 u=anton n=ansible INFO| web-b                      : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2026-04-12 12:09:42,245 p=51183 u=anton n=ansible WARNING| [WARNING]: Found both group and host with same name: bastion
+
+2026-04-12 12:09:42,246 p=51183 u=anton n=ansible WARNING| [WARNING]: Found both group and host with same name: elastic
+
+2026-04-12 12:09:42,246 p=51183 u=anton n=ansible WARNING| [WARNING]: Found both group and host with same name: zabbix
+
+2026-04-12 12:09:42,246 p=51183 u=anton n=ansible WARNING| [WARNING]: Found both group and host with same name: kibana
+
+2026-04-12 12:09:42,413 p=51183 u=anton n=ansible INFO| PLAY [Deploy website to web server] ******************************************************
+2026-04-12 12:09:42,419 p=51183 u=anton n=ansible INFO| TASK [Gathering Facts] *******************************************************************
+2026-04-12 12:09:45,435 p=51183 u=anton n=ansible WARNING| [WARNING]: Host 'web-b' is using the discovered Python interpreter at '/usr/bin/python3.10', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+
+2026-04-12 12:09:45,435 p=51183 u=anton n=ansible INFO| ok: [web-b]
+2026-04-12 12:09:45,507 p=51183 u=anton n=ansible WARNING| [WARNING]: Host 'web-a' is using the discovered Python interpreter at '/usr/bin/python3.10', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+
+2026-04-12 12:09:45,507 p=51183 u=anton n=ansible INFO| ok: [web-a]
+2026-04-12 12:09:45,509 p=51183 u=anton n=ansible INFO| TASK [Update apt] ************************************************************************
+2026-04-12 12:09:46,434 p=51183 u=anton n=ansible INFO| ok: [web-b]
+2026-04-12 12:09:46,454 p=51183 u=anton n=ansible INFO| ok: [web-a]
+2026-04-12 12:09:46,466 p=51183 u=anton n=ansible INFO| TASK [Install nginx] *********************************************************************
+2026-04-12 12:09:47,679 p=51183 u=anton n=ansible INFO| ok: [web-b]
+2026-04-12 12:09:47,723 p=51183 u=anton n=ansible INFO| ok: [web-a]
+2026-04-12 12:09:47,726 p=51183 u=anton n=ansible INFO| TASK [Create website directory] **********************************************************
+2026-04-12 12:09:48,219 p=51183 u=anton n=ansible INFO| ok: [web-b]
+2026-04-12 12:09:48,241 p=51183 u=anton n=ansible INFO| ok: [web-a]
+2026-04-12 12:09:48,246 p=51183 u=anton n=ansible INFO| TASK [Copy website files] ****************************************************************
+2026-04-12 12:11:22,760 p=51183 u=anton n=ansible INFO| changed: [web-a]
+2026-04-12 12:11:24,718 p=51183 u=anton n=ansible INFO| changed: [web-b]
+2026-04-12 12:11:24,721 p=51183 u=anton n=ansible INFO| TASK [Set permissions for directories] ***************************************************
+2026-04-12 12:11:25,288 p=51183 u=anton n=ansible INFO| changed: [web-b]
+2026-04-12 12:11:25,294 p=51183 u=anton n=ansible INFO| changed: [web-a]
+2026-04-12 12:11:25,298 p=51183 u=anton n=ansible INFO| TASK [Start and enable web server] *******************************************************
+2026-04-12 12:11:25,994 p=51183 u=anton n=ansible INFO| ok: [web-a]
+2026-04-12 12:11:26,024 p=51183 u=anton n=ansible INFO| ok: [web-b]
+2026-04-12 12:11:26,025 p=51183 u=anton n=ansible INFO| PLAY RECAP *******************************************************************************
+2026-04-12 12:11:26,025 p=51183 u=anton n=ansible INFO| web-a                      : ok=7    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2026-04-12 12:11:26,026 p=51183 u=anton n=ansible INFO| web-b                      : ok=7    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
