@@ -1,0 +1,106 @@
+- name: Install Zabbix with PostgreSQL
+  hosts: zabbix
+  become: yes
+  vars:
+    db_name: zabbix
+    db_user: zabbix
+    db_password: 12345
+
+  tasks:
+    - name: Install pip and Python
+      apt:
+        name:
+          - python3-pip
+          - python3-psycopg2
+          - acl
+        state: present
+    - name: Install PostgreSQL
+      apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+        state: present
+
+    - name: Start PostgreSQL
+      systemd:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Create user Zabbix
+      postgresql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        role_attr_flags: CREATEDB,LOGIN
+        state: present
+      become_user: postgres
+
+    - name: Create database Zabbix
+      postgresql_db:
+        name: "{{ db_name }}"
+        owner: "{{ db_user }}"
+        encoding: UTF-8
+        state: present
+      become_user: postgres
+
+    - name: Add repo Zabbix
+      shell: |
+        wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu22.04_all.deb
+        dpkg -i zabbix-release_latest_7.4+ubuntu22.04_all.deb
+        apt update
+
+    - name: Install Zabbix
+      apt:
+        name:
+          - zabbix-server-pgsql
+          - zabbix-frontend-php
+          - php-pgsql
+          - zabbix-apache-conf
+          - zabbix-sql-scripts
+          - zabbix-agent
+        state: present
+
+    - name: Import scheme Zabbix
+      shell: |
+        zcat /usr/share/zabbix/sql-scripts/postgresql/server.sql.gz | sudo -u {{ db_user }} psql {{ db_name }}
+      args:
+        creates: /var/lib/zabbix/db_imported
+
+    - name: Create directory
+      file:
+        path: /var/lib/zabbix
+        state: directory
+        mode: '0755'
+
+    - name: Create mark
+      file:
+        path: /var/lib/zabbix/db_imported
+        state: touch
+
+    - name: Configure Zabbix
+      lineinfile:
+        path: /etc/zabbix/zabbix_server.conf
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+      loop:
+        - { key: "DBHost", value: "localhost" }
+        - { key: "DBName", value: "{{ db_name }}" }
+        - { key: "DBUser", value: "{{ db_user }}" }
+        - { key: "DBPassword", value: "{{ db_password }}" }
+      notify: restart zabbix-server
+
+    - name: Start Zabbix
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - zabbix-server
+        - zabbix-agent
+        - apache2
+
+  handlers:
+    - name: restart zabbix-server
+      systemd:
+        name: zabbix-server
+        state: restarted
