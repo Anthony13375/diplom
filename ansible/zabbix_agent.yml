@@ -1,0 +1,47 @@
+- name: Install Zabbix Agent
+  hosts: web kibana elastic
+  become: yes
+  tasks:
+
+    - name: Add repo Zabbix
+      shell: |
+        wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu22.04_all.deb
+        dpkg -i zabbix-release_latest_7.4+ubuntu22.04_all.deb
+        apt update
+
+    - name: Install Zabbix Agent
+      apt:
+        name: zabbix-agent
+        state: present
+
+    - name: Configure Zabbix Agent
+      lineinfile:
+        path: /etc/zabbix/zabbix_agentd.conf
+        regexp: "^{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: "^Server=", line: "Server={{ hostvars['zabbix'].ansible_host }}" }
+        - { regexp: "^ServerActive=", line: "ServerActive={{ hostvars['zabbix'].ansible_host }}" }
+        - { regexp: "^Hostname=", line: "Hostname={{ ansible_hostname }}" }
+      notify: restart zabbix-agent
+
+    - name: Start Zabbix Agent
+      systemd:
+        name: zabbix-agent
+        state: started
+        enabled: yes
+
+    - name: Check status Zabbix Agent
+      command: systemctl status zabbix-agent --no-pager
+      register: agent_status
+      changed_when: false
+
+    - name: Outputs
+      debug:
+        msg: "{{ agent_status.stdout_lines }}"
+
+  handlers:
+    - name: restart zabbix-agent
+      systemd:
+        name: zabbix-agent
+        state: restarted
