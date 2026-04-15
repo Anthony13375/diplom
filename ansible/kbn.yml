@@ -1,0 +1,41 @@
+- name: Install Kibana
+  hosts: kibana
+  become: yes
+
+  tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+
+    - name: Install apt-transport-https and gnupg2
+      apt:
+        name:
+          - apt-transport-https
+          - gnupg2
+        state: present
+
+    - name: Install Kibana
+      apt:
+        deb: https://mirror.yandex.ru/mirrors/elastic/8/pool/main/k/kibana/kibana-8.19.14-amd64.deb
+        state: present
+
+    - name: Start Kibana
+      service:
+        name: kibana
+        state: started
+        enabled: yes
+
+    - name: Create Kibana configure
+      template:
+        src: /home/anton/diplom/ansible/kibana.yml
+        dest: /etc/kibana/kibana.yml
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart kibana
+
+  handlers:
+    - name: restart kibana
+      systemd:
+        name: kibana
+        state: restarted
